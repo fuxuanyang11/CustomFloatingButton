@@ -12,18 +12,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final FloatButton floatButton = findViewById(R.id.floatButton);
+        final FloatButton2 floatButton = findViewById(R.id.floatButton);
 
-        floatButton.setOnClickListener(new FloatButton.OnClickListener() {
+        floatButton.setOnClickListener(new FloatButton2.OnClickListener() {
             @Override
-            public void onClick(FloatButton sfb) {
+            public void onClick(FloatButton2 sfb) {
                 sfb.startScroll();
             }
         });
 
-        floatButton.setFoldListener(new FloatButton.FoldListener() {
+        floatButton.setFoldListener(new FloatButton2.FoldListener() {
             @Override
-            public void onFold(boolean isIncrease, FloatButton fb) {
+            public void onFold(boolean isIncrease, FloatButton2 fb) {
 
             }
         });

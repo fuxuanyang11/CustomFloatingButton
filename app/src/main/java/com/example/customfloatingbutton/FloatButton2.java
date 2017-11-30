@@ -22,15 +22,19 @@ import static android.content.ContentValues.TAG;
  * Created by ASUS on 2017/9/7.
  */
 
-public class FloatButton extends ViewGroup {
+public class FloatButton2 extends ViewGroup {
 
-    private static final String TAG = "FloatButton";
+    private static final String TAG = "FloatButton2";
+
     private float width;
     private float height;
     //圆半径
     private float center;
     //矩形右边x坐标
     private float x;
+
+    //矩形左边x坐标
+    private float left_x;
 
     private Paint mPaint;
 
@@ -42,15 +46,15 @@ public class FloatButton extends ViewGroup {
     private FoldListener foldListener;  //折叠监听
     private OnClickListener onClickListener;  //点击监听
 
-    private FloatButton mFloatButton;
+    private FloatButton2 mFloatButton;
 
     private float widWidth;
 
-    private View child;     //textview
-    private int tWidth;     //文本宽度
-    private int tHeight;    //文本高度
-    private float tX;       //文本宽度变化值
-    private float tX_x;     //文本拉伸变化比
+//    private View child;     //textview
+//    private int tWidth;     //文本宽度
+//    private int tHeight;    //文本高度
+//    private float tX;       //文本宽度变化值
+//    private float tX_x;     //文本拉伸变化比
 
     private int bacColor;
     private int innerCircleColor;
@@ -59,11 +63,11 @@ public class FloatButton extends ViewGroup {
     private float y = 20;    //圆环宽度
     private float y_x;      //圆环宽度比
 
-    public FloatButton(Context context) {
+    public FloatButton2(Context context) {
         super(context);
     }
 
-    public FloatButton(Context context, AttributeSet attrs) {
+    public FloatButton2(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         init(context, attrs);
@@ -77,13 +81,13 @@ public class FloatButton extends ViewGroup {
         bacColor = type.getColor(R.styleable.FloatButton_inner_circle_color, Color.BLUE);
         text = type.getString(R.styleable.FloatButton_text);
 
-        TextView textView = new TextView(context);
-        textView.setText(text);
-        textView.setTextSize(16);
-        addView(textView);
+//        TextView textView = new TextView(context);
+//        textView.setText(text);
+//        textView.setTextSize(16);
+//        addView(textView);
     }
 
-    public FloatButton(Context context, AttributeSet attrs, int defStyleAttr) {
+    public FloatButton2(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -94,20 +98,21 @@ public class FloatButton extends ViewGroup {
             width = MeasureSpec.getSize(widthMeasureSpec);
             height = MeasureSpec.getSize(heightMeasureSpec);
 
-            child = getChildAt(0);
-            measureChild(child, widthMeasureSpec, heightMeasureSpec);
-            tWidth = child.getMeasuredWidth();
-            tHeight = child.getMeasuredHeight();
+//            child = getChildAt(0);
+//            measureChild(child, widthMeasureSpec, heightMeasureSpec);
+//            tWidth = child.getMeasuredWidth();
+//            tHeight = child.getMeasuredHeight();
 
             center = height / 2;
+            left_x = center;
             x = width - center;
-            y_x = y / x;
+            y_x = y * left_x;
             Log.d(TAG, "y_x: " + y_x);
 
             //初始化文本范围右下角 x坐标  +10设置间距
-            tX = tWidth + center * 2 + 10;
+//            tX = tWidth + center * 2 + 10;
             //初始文本伸缩比
-            tX_x = (tWidth + 10) / (width - center * 2);
+//            tX_x = (tWidth + 10) / (width - center * 2);
 
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -116,25 +121,25 @@ public class FloatButton extends ViewGroup {
     private void setWidthAdnHeight(int widthMeasureSpec, int heightMeasureSpec) {
         int hMode = MeasureSpec.getMode(heightMeasureSpec);
         int wMode = MeasureSpec.getMode(widthMeasureSpec);
-        if (wMode == MeasureSpec.AT_MOST) {
-            if (tWidth < 100){
-                width = tWidth + 150;
-            }else if(tWidth > 100 && tWidth *1.5f<widWidth -100){
-                width = tWidth*1.5f;
-            }else{
-                width = widWidth-100;
-            }
-        } else {
-            width = MeasureSpec.getSize(widthMeasureSpec);
-        }
-        if (hMode == MeasureSpec.AT_MOST) {
-            height = tHeight*2;
-        } else {
-            height = MeasureSpec.getSize(heightMeasureSpec);
-            if (height<tHeight*2){
-                height = tHeight*2;
-            }
-        }
+//        if (wMode == MeasureSpec.AT_MOST) {
+//            if (tWidth < 100){
+//                width = tWidth + 150;
+//            }else if(tWidth > 100 && tWidth *1.5f<widWidth -100){
+//                width = tWidth*1.5f;
+//            }else{
+//                width = widWidth-100;
+//            }
+//        } else {
+//            width = MeasureSpec.getSize(widthMeasureSpec);
+//        }
+//        if (hMode == MeasureSpec.AT_MOST) {
+//            height = tHeight*2;
+//        } else {
+//            height = MeasureSpec.getSize(heightMeasureSpec);
+//            if (height<tHeight*2){
+//                height = tHeight*2;
+//            }
+//        }
     }
 
     //ViewGroup 绘制方法
@@ -142,9 +147,9 @@ public class FloatButton extends ViewGroup {
     protected void dispatchDraw(Canvas canvas) {
         mPaint.setColor(bacColor);
         //左边圆
-        canvas.drawCircle(center, center, center, mPaint);
+        canvas.drawCircle(left_x, center, center, mPaint);
         //矩形
-        RectF rectF = new RectF(center, 0, x, height);
+        RectF rectF = new RectF(left_x, 0, x, height);
         mPaint.setColor(bacColor);
         canvas.drawRect(rectF, mPaint);
         //右边圆
@@ -153,7 +158,7 @@ public class FloatButton extends ViewGroup {
 
         //小圆
         mPaint.setColor(innerCircleColor);
-        canvas.drawCircle(center, center, center - y, mPaint);
+        canvas.drawCircle(x, center, center - y, mPaint);
 
         canvas.save();
         super.dispatchDraw(canvas);
@@ -161,9 +166,11 @@ public class FloatButton extends ViewGroup {
 
     @Override
     protected void onLayout(boolean b, int i, int i1, int i2, int i3) {
-        child.layout((int)center * 2 + 5, (int)center -tHeight / 2, (int) tX,
-                (int)center + tHeight / 2);
+//        child.layout((int)center * 2 + 5, (int)center -tHeight / 2, (int) tX,
+//                (int)center + tHeight / 2);
     }
+
+
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
@@ -171,16 +178,16 @@ public class FloatButton extends ViewGroup {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case IS_SLIDE_DECREASE:
-                    x -= 30;
-                    if (x >= center + 30) {
-                        y = y_x * x;
-                        Log.d(TAG, " y: " +  y);
-                        tX = tX_x * x;
+                    left_x += 30;
+                    if (left_x <= width - center) {
+                        y = y_x / left_x;
+                        Log.d(TAG, "y: " + y);
+//                        tX = tX_x * left_x;
                         mHandler.sendEmptyMessageDelayed(IS_SLIDE_DECREASE , 1);
                     }else {
-                        x = center;
+                        left_x = x;
                         y = 0;
-                        tX = center * 2 + 5;
+//                        tX = center * 2 + 5;
                         setEnabled(true);
                         //折叠回调
                         if (foldListener != null) {
@@ -189,21 +196,23 @@ public class FloatButton extends ViewGroup {
                     }
                     break;
                 case IS_SLIDE_INCREASE:
-                    x += 30;
-                    if (x < width - center) {
-                        y = y_x * x;
-                        tX = tX_x * x;
+                    left_x -= 30;
+                    if (left_x > center) {
+                        y = y_x / left_x;
+//                        tX = tX_x * left_x;
                         mHandler.sendEmptyMessageDelayed(IS_SLIDE_INCREASE , 1);
                     } else {
                         y = 20;
-                        x = width - center;
-                        tX = tWidth + center * 2 + 10;
+                        left_x = center;
+//                        tX = tWidth + center * 2 + 10;
                         setEnabled(true);
                         //折叠回调
                         if (foldListener != null) {
                             foldListener.onFold(isIncrease, mFloatButton);
                         }
                     }
+                    break;
+                default:
                     break;
             }
             requestLayout();
@@ -235,6 +244,8 @@ public class FloatButton extends ViewGroup {
                     onClickListener.onClick(mFloatButton);
                 }
                 break;
+            default:
+                break;
         }
         return true;
     }
@@ -242,13 +253,13 @@ public class FloatButton extends ViewGroup {
     private boolean judgeCanClick(float x, float y) {
         boolean canClick;
         if (isIncrease) {   //伸展状态
-            if (x < width && y < height) {
+            if (left_x < center * 2 && y < height) {
                 canClick = true;
             }else {
                 canClick = false;
             }
         }else {
-            if (x < center * 2 && y < center * 2) {  //在圆内
+            if (x < width && y < center * 2) {  //在圆内
                 canClick = true;
             }else {
                 canClick = false;
@@ -282,7 +293,7 @@ public class FloatButton extends ViewGroup {
     }
 
     public interface FoldListener {
-        void onFold(boolean isIncrease, FloatButton fb);
+        void onFold(boolean isIncrease, FloatButton2 fb);
     }
 
     public void setFoldListener(FoldListener foldListener) {
@@ -294,7 +305,7 @@ public class FloatButton extends ViewGroup {
     }
 
     public interface OnClickListener {
-        void onClick(FloatButton sfb);
+        void onClick(FloatButton2 sfb);
     }
 
 
